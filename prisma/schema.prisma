@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//* User Model *//
+model User {
+  id         String   @id @default(uuid())
+  name       String
+  email      String   @unique
+  identify   String   @unique
+  password   String
+  role       UserRole @default(CLIENT)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  wallet   Wallet?
+  services Service[] @relation("ProviderServices")
+
+  bookingsAsClient   Booking[] @relation("ClientBookings")
+  bookingsAsProvider Booking[] @relation("ProviderBookings")
+
+  @@map("_users")
+}
+
+//* Service Model *//
+model Service {
+  id          String   @id @default(uuid())
+  name        String
+  description String   @default("")
+  price       Decimal
+  providerId  String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  provider User      @relation(name: "ProviderServices", fields: [providerId], references: [id])
+  bookings Booking[]
+
+  @@map("_services")
+}
+
+//* Wallet Model *//
+model Wallet {
+  id         String   @id @default(uuid())
+  balance    Decimal
+  userId     String   @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  transactions Transaction[]
+  user         User          @relation(fields: [userId], references: [id])
+
+  @@map("_wallets")
+}
+
+//* Booking Model *//
+model Booking {
+  id         String        @id @default(uuid())
+  clientId   String
+  providerId String
+  serviceId  String
+  price      Decimal
+  status     BookingStatus @default(PENDING)
+  created_at DateTime      @default(now())
+  updated_at DateTime      @updatedAt
+
+  transactions Transaction[]
+  client       User          @relation(name: "ClientBookings", fields: [clientId], references: [id])
+  provider     User          @relation(name: "ProviderBookings", fields: [providerId], references: [id])
+  service      Service       @relation(fields: [serviceId], references: [id])
+
+  @@map("_bookings")
+}
+
+//* Transaction Model *//
+model Transaction {
+  id        String          @id @default(uuid())
+  walletId  String
+  bookingId String?
+  amount    Decimal
+  type      TransactionType
+  createdAt DateTime        @default(now())
+
+  wallet  Wallet   @relation(fields: [walletId], references: [id])
+  booking Booking? @relation(fields: [bookingId], references: [id])
+
+  @@map("_transactions")
+}
+
+enum UserRole {
+  CLIENT
+  PROVIDER
+  ADMIN
+}
+
+enum TransactionType {
+  DEBIT
+  CREDIT
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
