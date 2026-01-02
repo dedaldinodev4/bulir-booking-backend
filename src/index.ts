@@ -1,5 +1,9 @@
 import { server } from './server'
 
-server.listen(3333, () => {
-  console.log(`Server running on port 3333.`)
+server.listen(3000, () => {
+  console.log(`Server running on port 3000.`)
+});
+
+server.get("/", (request, response) => {
+  response.send("🚀 API TypeScript + Docker funcionando");
 });
