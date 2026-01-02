@@ -6,9 +6,12 @@ export interface IService extends IBase, IServiceRequest {
   status: boolean;
 }
 
-export interface IServiceRequest {
+export interface IServiceRequest extends IUpdateServiceRequest {
+  providerId: string;
+}
+
+export interface IUpdateServiceRequest {
   name: string;
   description: string;
   price: Decimal;
-  providerId: string;
 }

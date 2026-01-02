@@ -18,3 +18,11 @@ export interface IUpdateUser {
   identify: string;
   status: boolean;
 }
+
+export interface IUserCostum extends IBase {
+  status: boolean;
+  name: string;
+  identify: string;
+  email: string;
+  role: 'ADMIN' | 'CLIENT' | 'PROVIDER'
+}
