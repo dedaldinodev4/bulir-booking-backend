@@ -1,4 +1,6 @@
 import bcrypt from 'bcrypt'
+import type { IAuthRequest } from '../dtos/Auth';
+import type { IUser } from '../dtos/User';
 
 //* Hashing Password Method *//
 export const hashPassword = (password: string): string => {     
@@ -7,4 +9,12 @@ export const hashPassword = (password: string): string => {
 
 export const checkUnEncryptedPasswordIsValid = (unEncryptedPassword: string, password: string): boolean  => {
   return bcrypt.compareSync(unEncryptedPassword, password);
+}
+
+export const convertUserLogged = (user: IUser): IAuthRequest => {
+  const { id, email, name, role, identify, status } = user;
+   const data:IAuthRequest = {
+    id, name, role, identify, email, status
+   }
+   return data;
 }
