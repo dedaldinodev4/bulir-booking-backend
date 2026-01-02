@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client"
+  output   = "./generated/prisma"
 }
 
 datasource db {
@@ -21,6 +22,7 @@ model User {
   identify   String   @unique
   password   String
   role       UserRole @default(CLIENT)
+  status     Boolean  @default(true)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
@@ -40,6 +42,7 @@ model Service {
   description String   @default("")
   price       Decimal
   providerId  String
+  status     Boolean  @default(true)
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
