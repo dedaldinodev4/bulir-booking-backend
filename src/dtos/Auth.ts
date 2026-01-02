@@ -9,6 +9,7 @@ export interface IAuthRequest {
   name: string;
   identify: string;
   email: string;
+  role: 'ADMIN' | 'CLIENT' | 'PROVIDER'
   status: boolean;
 }
 
