@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { FindAllBookingsUseCase } from './FindAllBookingsUseCase'
-import type { BookingStatus } from '@prisma/client';
+import { BookingStatus } from '@prisma/client';
 
 
 export class FindAllBookingsController {
