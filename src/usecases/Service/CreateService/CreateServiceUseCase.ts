@@ -1,7 +1,7 @@
 import { 
   IServiceRepository 
 } from "../../../repositories/IServiceRepository";
-import type { IUserRepository } from "../../../repositories/IUserRepositoty";
+import { IUserRepository } from "../../../repositories/IUserRepositoty";
 import { 
   ICreateService, 
   ICreateServiceRequest 
@@ -18,7 +18,7 @@ export class CreateServiceUseCase {
   async execute(data: ICreateServiceRequest): Promise<ICreateService | Error> {
     const { providerId } = data;
     const user = await this.userService.findById(providerId);
-    
+
     if (user && user.role !== 'PROVIDER') {
       throw new Error('Only providers can create services');
     }

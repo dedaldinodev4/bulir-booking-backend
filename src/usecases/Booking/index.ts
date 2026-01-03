@@ -1,0 +1,1 @@
+export { bookingRoutes } from './routes'

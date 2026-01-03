@@ -2,9 +2,12 @@ import Decimal from "decimal.js";
 import { IBase } from "./Base";
 import z from "zod";
 import { PaginationQuerySchema } from "./Pagination";
+import { BookingStatus } from "@prisma/client";
 
 
-export interface IBooking extends IBase, IBookingRequest { }
+export interface IBooking extends IBase, IBookingRequest {
+  status: BookingStatus
+ }
 
 export interface IBookingRequest extends IUpdateBookingRequest {
   serviceId: string;
@@ -15,7 +18,7 @@ export interface IBookingRequest extends IUpdateBookingRequest {
 
 export interface IUpdateBookingRequest {
   price: Decimal;
-  status:  'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED'
+  status: BookingStatus;
 }
 
 
