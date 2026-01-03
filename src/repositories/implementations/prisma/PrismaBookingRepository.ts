@@ -1,9 +1,10 @@
 import { prisma } from "../../../lib/prisma";
-import { 
-  IBookingRequest, 
-  IBooking, 
+import {
+  IBookingRequest,
+  IBooking,
   ListBookingsQuery,
-  IUpdateBookingRequest } from "../../../dtos/Booking";
+  IUpdateBookingRequest
+} from "../../../dtos/Booking";
 import { IBookingRepository } from "../../IBookingRepository";
 import { IResultPaginated } from "../../../dtos/Pagination";
 
@@ -14,28 +15,50 @@ export class PrismaBookingRepository implements IBookingRepository {
     const booking = await this.repository.findUnique(
       {
         where: { id },
+        include: {
+          provider: {
+            select: {
+              id: true,
+              name: true,
+              identify: true,
+              email: true,
+            }
+          },
+          client: {
+            select: {
+              id: true,
+              name: true,
+              identify: true,
+              email: true,
+            }
+          },
+          service: {
+            select: {
+              id: true,
+              price: true,
+              name: true,
+              description: true,
+            }
+          },
+        },
+
       });
     return booking;
   }
 
 
   async findAll(query: ListBookingsQuery): Promise<IResultPaginated> {
-    const { page, limit, order, status, clientId, providerId, serviceId } = query;
+    const { page, limit, status, clientId, providerId, serviceId } = query;
 
     const skip = (page - 1) * limit;
+    const order: "asc" | "desc" = query.order ?? "desc";
+    const orderByField = query.orderBy ?? "created_at";
     const where: any = {
       providerId,
       status,
       clientId,
       serviceId
     };
-
-    //* Dynamic Sort *//
-    let orderBy: any = { created_at: 'desc' };
-    if (order) {
-      const [field, direction] = order.split(':');
-      orderBy = { [field]: direction === 'asc' ? 'asc' : 'desc' };
-    }
 
     const [items, totalResults] = await Promise.all([
       this.repository.findMany({
@@ -48,11 +71,30 @@ export class PrismaBookingRepository implements IBookingRepository {
               email: true,
             }
           },
+          client: {
+            select: {
+              id: true,
+              name: true,
+              identify: true,
+              email: true,
+            }
+          },
+          service: {
+            select: {
+              id: true,
+              price: true,
+              name: true,
+              description: true,
+            }
+          },
         },
         skip,
         take: limit,
         where,
-        orderBy,
+        orderBy: [
+          { [orderByField]: order },
+          { id: "desc" }
+        ],
       }),
       this.repository.count({ where }),
     ]);

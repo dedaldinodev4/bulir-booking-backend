@@ -17,7 +17,6 @@ export interface IBookingRequest extends IUpdateBookingRequest {
 }
 
 export interface IUpdateBookingRequest {
-  price: Decimal;
   status: BookingStatus;
 }
 
