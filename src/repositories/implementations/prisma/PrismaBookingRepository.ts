@@ -1,35 +1,34 @@
 import { prisma } from "../../../lib/prisma";
 import { 
-  IServiceRequest, 
-  IService, 
-  IUpdateServiceRequest } from "../../../dtos/Service";
-import { IServiceRepository } from "../../IServiceRepository";
-import { IResultPaginated, PaginationQuery } from "../../../dtos/Pagination";
+  IBookingRequest, 
+  IBooking, 
+  ListBookingsQuery,
+  IUpdateBookingRequest } from "../../../dtos/Booking";
+import { IBookingRepository } from "../../IBookingRepository";
+import { IResultPaginated } from "../../../dtos/Pagination";
 
-export class PrismaServiceRepository implements IServiceRepository {
-  private repository = prisma.service;
+export class PrismaBookingRepository implements IBookingRepository {
+  private repository = prisma.booking;
 
-  async findById(id: string): Promise<IService | null> {
-    const service = await this.repository.findUnique(
+  async findById(id: string): Promise<IBooking | null> {
+    const booking = await this.repository.findUnique(
       {
         where: { id },
       });
-    return service;
+    return booking;
   }
 
-  async findByProvider(providerId: string): Promise<IService[]> {
-    const services = await this.repository.findMany(
-      {
-        where: { providerId },
-      });
-    return services;
-  }
 
-  async findAll(query: PaginationQuery): Promise<IResultPaginated> {
-    const { page, limit, order } = query;
+  async findAll(query: ListBookingsQuery): Promise<IResultPaginated> {
+    const { page, limit, order, status, clientId, providerId, serviceId } = query;
 
     const skip = (page - 1) * limit;
-    const where: any = {};
+    const where: any = {
+      providerId,
+      status,
+      clientId,
+      serviceId
+    };
 
     //* Dynamic Sort *//
     let orderBy: any = { created_at: 'desc' };
@@ -76,22 +75,22 @@ export class PrismaServiceRepository implements IServiceRepository {
     };
   }
 
-  async create(data: IServiceRequest): Promise<IService> {
-    const createService = await this.repository.create({
+  async create(data: IBookingRequest): Promise<IBooking> {
+    const createBooking = await this.repository.create({
       data
     })
-    return createService;
+    return createBooking;
   }
 
-  async update(id: string, data: IUpdateServiceRequest): Promise<IService> {
-    const serviceUpdate = await this.repository.update({
+  async update(id: string, data: IUpdateBookingRequest): Promise<IBooking> {
+    const BookingUpdate = await this.repository.update({
       data: data,
       where: {
         id
       }
     })
 
-    return serviceUpdate;
+    return BookingUpdate;
   }
 
   async delete(id: string, user: string): Promise<void> {
