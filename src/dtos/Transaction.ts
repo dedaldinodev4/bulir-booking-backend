@@ -9,7 +9,7 @@ export interface ITransaction extends IBase, ITransactionRequest { }
 
 export interface ITransactionRequest extends IUpdateTransactionRequest {
   walletId: string;
-  bookingId: string;
+  bookingId: string | null;
 }
 
 export interface IUpdateTransactionRequest {

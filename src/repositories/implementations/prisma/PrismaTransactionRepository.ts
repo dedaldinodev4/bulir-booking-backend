@@ -20,14 +20,14 @@ export class PrismaTransactionRepository implements ITransactionRepository {
 
 
   async findAll(query: ListTransactionsQuery): Promise<IResultPaginated> {
-    const { page, limit, order, status, clientId, providerId, serviceId } = query;
+    const { page, limit, order, status, bookingId, walletId, type } = query;
 
     const skip = (page - 1) * limit;
     const where: any = {
-      providerId,
+      walletId,
       status,
-      clientId,
-      serviceId
+      bookingId,
+      type
     };
 
     //* Dynamic Sort *//
@@ -40,14 +40,44 @@ export class PrismaTransactionRepository implements ITransactionRepository {
     const [items, totalResults] = await Promise.all([
       this.repository.findMany({
         include: {
-          provider: {
+          wallet: {
             select: {
               id: true,
-              name: true,
-              identify: true,
-              email: true,
+              user: {
+                select: {
+                  name: true,
+                  identify: true,
+                  email: true
+                }
+              },
             }
           },
+          booking: {
+            select: {
+              price: true,
+              provider: { 
+                select: {
+                  name: true,
+                  identify: true,
+                  email: true
+                }
+              },
+              client: {
+                select: {
+                  name: true,
+                  identify: true,
+                  email: true
+                }
+              },
+              service: {
+                select: {
+                  name: true,
+                  price: true,
+                  description: true,
+                }
+              }
+            }
+          }
         },
         skip,
         take: limit,
@@ -83,14 +113,14 @@ export class PrismaTransactionRepository implements ITransactionRepository {
   }
 
   async update(id: string, data: IUpdateTransactionRequest): Promise<ITransaction> {
-    const TransactionUpdate = await this.repository.update({
+    const transactionUpdate = await this.repository.update({
       data: data,
       where: {
         id
       }
     })
 
-    return TransactionUpdate;
+    return transactionUpdate;
   }
 
   async delete(id: string, user: string): Promise<void> {
