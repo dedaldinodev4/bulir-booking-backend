@@ -6,7 +6,7 @@ import {
 export interface IWalletRepository {
   create(data: IWalletRequest):Promise<IWallet | Error>;
   update(id: string, data: IUpdateWalletRequest): Promise<IWallet| Error>;
-  findAll(page: number, perPage: number):Promise<IWallet[]>;
+  findAll():Promise<IWallet[]>;
   findById(id: string): Promise<IWallet | null>;
   findByUser(userId: string): Promise<IWallet | null>;
   delete(id: string, user: string): Promise<void>;

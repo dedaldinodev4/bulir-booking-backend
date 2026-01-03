@@ -1,17 +1,17 @@
 import { Request, Response } from 'express'
-import { DeletePhoneUseCase } from './DeletePhoneUseCase'
+import { DeleteWalletUseCase } from './DeleteWalletUseCase'
 
 
-export class DeletePhoneController {
+export class DeleteWalletController {
   constructor(
-    private deletePhoneUseCase: DeletePhoneUseCase
+    private deleteWalletUseCase: DeleteWalletUseCase
   ) { }
 
   async handle(request: Request, response: Response): Promise<Response> {
     const { id, user } = request.params;
 
     try {
-      const data = await this.deletePhoneUseCase.execute(id, user);
+      const data = await this.deleteWalletUseCase.execute(id, user);
 
       return response.status(204).end();
     } catch (err: any) {

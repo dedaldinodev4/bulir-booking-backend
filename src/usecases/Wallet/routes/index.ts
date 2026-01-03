@@ -1,11 +1,11 @@
 import { Router } from "express";
 
-import { findAllPhonesFactory } from "../FindAllPhones/FindAllPhonesFactory";
-import { findByIdPhoneFactory } from "../FindByIdPhone/FindByIdPhoneFactory";
-import { updatePhoneFactory } from "../UpdatePhone/UpdatePhoneFactory";
-import { deletePhoneFactory } from "../DeletePhone/DeletePhoneFactory";
+import { findAllPhonesFactory } from "../FindAllWallets/FindAllWalletsFactory";
+import { findByIdPhoneFactory } from "../FindByIdWallet/FindByIdWalletFactory";
+import { updatePhoneFactory } from "../UpdatePhone/UpdateWalletFactory";
+import { deletePhoneFactory } from "../DeleteWallet/DeleteWalletFactory";
 import { createPhoneFactory } from '../CreateWallet/CreateWalletFactory'
-import { findByUserPhoneFactory } from "../FindByUserPhone/FindByUserPhoneFactory";
+import { findByUserPhoneFactory } from "../FindByUserWallet/FindByUserWalletFactory";
 
 export const phoneRoutes = Router();
 

@@ -1,18 +1,18 @@
 import { Request, Response } from 'express'
 import { 
-  FindByUserPhoneUseCase 
-} from './FindByUserPhoneUseCase'
+  FindByUserWalletUseCase 
+} from './FindByUserWalletUseCase'
 
 
-export class FindByUserPhoneController {
+export class FindByUserWalletController {
   constructor(
-    private findByUserPhoneUseCase: FindByUserPhoneUseCase
+    private findByUserWalletUseCase: FindByUserWalletUseCase
   ) { }
 
   async handle(request: Request, response: Response): Promise<Response> {
     try {
       const { id_user } = request.params
-      const data = await this.findByUserPhoneUseCase.execute(id_user)
+      const data = await this.findByUserWalletUseCase.execute(id_user)
       return response.status(200).json(data);
 
     } catch (err: any) {

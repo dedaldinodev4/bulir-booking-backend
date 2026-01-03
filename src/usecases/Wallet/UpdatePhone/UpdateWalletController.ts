@@ -1,19 +1,19 @@
 import { Request, Response } from 'express'
-import { UpdatePhoneUseCase } from './UpdatePhoneUseCase'
+import { UpdateWalletUseCase } from './UpdateWalletUseCase'
 
 
-export class UpdatePhoneController {
+export class UpdateWalletController {
   constructor(
-    private updatePhoneUseCase: UpdatePhoneUseCase
+    private updateWalletUseCase: UpdateWalletUseCase
   ) { }
 
   async handle(request: Request, response: Response): Promise<Response> {
     const { id } = request.params;
-    const { number, id_user  } = request.body;
+    const { balance  } = request.body;
 
     try {
-      const data = await this.updatePhoneUseCase.execute(id, {
-        number, id_user
+      const data = await this.updateWalletUseCase.execute(id, {
+        balance
       });
 
       return response.status(201).json(data);

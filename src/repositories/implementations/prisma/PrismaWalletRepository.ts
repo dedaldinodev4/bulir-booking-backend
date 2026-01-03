@@ -26,7 +26,16 @@ export class PrismaWalletRepository implements IWalletRepository {
 
   async findAll(): Promise<IWallet[]> {
     const wallets = await this.repository.findMany({
-      orderBy: { created_at: 'asc' }
+      orderBy: { created_at: 'asc' },
+      include: { user: {
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          identify: true,
+          role: true,
+        }
+      }}
     });
     return wallets;
   }
@@ -49,7 +58,7 @@ export class PrismaWalletRepository implements IWalletRepository {
     return walletUpdate;
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string, user: string): Promise<void> {
     await this.repository.delete({
       where: {
         id
