@@ -10,9 +10,9 @@ export class FindByUserWalletUseCase {
     private walletRepository: IWalletRepository
   ) { }
 
-  async execute(id_user: string): Promise<IWallet | Error> {
+  async execute(userId: string): Promise<IWallet | Error> {
 
-    const wallet = await this.walletRepository.findByUser(id_user);
+    const wallet = await this.walletRepository.findByUser(userId);
     if (!wallet) {
       throw new Error("Wallet does not exists.");
     }
