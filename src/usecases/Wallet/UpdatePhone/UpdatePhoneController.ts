@@ -1,19 +1,19 @@
 import { Request, Response } from 'express'
-import { UpdateUserUseCase } from './UpdateUserUseCase'
+import { UpdatePhoneUseCase } from './UpdatePhoneUseCase'
 
 
-export class UpdateUserController {
+export class UpdatePhoneController {
   constructor(
-    private updateUserUseCase: UpdateUserUseCase
+    private updatePhoneUseCase: UpdatePhoneUseCase
   ) { }
 
   async handle(request: Request, response: Response): Promise<Response> {
     const { id } = request.params;
-    const { email, status, name, identify } = request.body;
+    const { number, id_user  } = request.body;
 
     try {
-      const data = await this.updateUserUseCase.execute(id, { 
-        email, status, name, identify
+      const data = await this.updatePhoneUseCase.execute(id, {
+        number, id_user
       });
 
       return response.status(201).json(data);
