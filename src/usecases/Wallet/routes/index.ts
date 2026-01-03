@@ -1,24 +1,24 @@
 import { Router } from "express";
 
-import { findAllPhonesFactory } from "../FindAllWallets/FindAllWalletsFactory";
-import { findByIdPhoneFactory } from "../FindByIdWallet/FindByIdWalletFactory";
-import { updatePhoneFactory } from "../UpdatePhone/UpdateWalletFactory";
-import { deletePhoneFactory } from "../DeleteWallet/DeleteWalletFactory";
-import { createPhoneFactory } from '../CreateWallet/CreateWalletFactory'
-import { findByUserPhoneFactory } from "../FindByUserWallet/FindByUserWalletFactory";
+import { findAllWalletsFactory } from "../FindAllWallets/FindAllWalletsFactory";
+import { findByIdWalletFactory } from "../FindByIdWallet/FindByIdWalletFactory";
+import { updateWalletFactory } from "../UpdateWallet/UpdateWalletFactory";
+import { deleteWalletFactory } from "../DeleteWallet/DeleteWalletFactory";
+import { createWalletFactory } from '../CreateWallet/CreateWalletFactory'
+import { findByUserWalletFactory } from "../FindByUserWallet/FindByUserWalletFactory";
 
-export const phoneRoutes = Router();
+export const walletRoutes = Router();
 
-phoneRoutes.route('/')
-  .post((request, response) => { return createPhoneFactory().handle(request, response) } )
-  .get((request, response) => { return findAllPhonesFactory().handle(request, response) } )
+walletRoutes.route('/')
+  .post((request, response) => { return createWalletFactory().handle(request, response) } )
+  .get((request, response) => { return findAllWalletsFactory().handle(request, response) } )
 
-phoneRoutes.route('/:id')
-  .get((request, response) => { return findByIdPhoneFactory().handle(request, response) } )
-  .put((request, response) => { return updatePhoneFactory().handle(request, response) } )
+walletRoutes.route('/:id')
+  .get((request, response) => { return findByIdWalletFactory().handle(request, response) } )
+  .put((request, response) => { return updateWalletFactory().handle(request, response) } )
   
-phoneRoutes.route('/:id/deletedBy/:user')
-  .delete((request, response) => { return deletePhoneFactory().handle(request, response) } )
+walletRoutes.route('/:id/deletedBy/:user')
+  .delete((request, response) => { return deleteWalletFactory().handle(request, response) } )
 
-phoneRoutes.route('/byUser/:id_user')
-  .get((request, response) => { return findByUserPhoneFactory().handle(request, response) } )
+walletRoutes.route('/byUser/:userId')
+  .get((request, response) => { return findByUserWalletFactory().handle(request, response) } )

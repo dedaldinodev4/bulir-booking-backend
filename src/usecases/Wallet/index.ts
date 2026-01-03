@@ -1,1 +1,1 @@
-export { phoneRoutes } from './routes'
+export { walletRoutes } from './routes'
