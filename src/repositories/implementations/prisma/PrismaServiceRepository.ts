@@ -1,0 +1,105 @@
+import { prisma } from "../../../lib/prisma";
+import { 
+  IServiceRequest, 
+  IService, 
+  IUpdateServiceRequest } from "../../../dtos/Service";
+import { IServiceRepository } from "../../IServiceRepository";
+import type { IResultPaginated, PaginationQuery } from "../../../dtos/Pagination";
+
+export class PrismaServiceRepository implements IServiceRepository {
+  private repository = prisma.service;
+
+  async findById(id: string): Promise<IService | null> {
+    const service = await this.repository.findUnique(
+      {
+        where: { id },
+      });
+    return service;
+  }
+
+  async findByProvider(providerId: string): Promise<IService[]> {
+    const services = await this.repository.findMany(
+      {
+        where: { providerId },
+      });
+    return services;
+  }
+
+  async findAll(query: PaginationQuery): Promise<IResultPaginated> {
+    const { page, limit, order } = query;
+
+    const skip = (page - 1) * limit;
+    const where: any = {};
+
+    //* Dynamic Sort *//
+    let orderBy: any = { created_at: 'desc' };
+    if (order) {
+      const [field, direction] = order.split(':');
+      orderBy = { [field]: direction === 'asc' ? 'asc' : 'desc' };
+    }
+
+    const [items, totalResults] = await Promise.all([
+      this.repository.findMany({
+        include: {
+          provider: {
+            select: {
+              id: true,
+              name: true,
+              identify: true,
+              email: true,
+            }
+          },
+        },
+        skip,
+        take: limit,
+        where,
+        orderBy,
+      }),
+      this.repository.count({ where }),
+    ]);
+
+    const totalPages = Math.ceil(totalResults / limit);
+    const totalCurrentResults = items.length;
+
+    return {
+      data: items,
+      paginator: {
+        currentPage: page,
+        pages: totalPages,
+        nextPage: page < totalPages ? page + 1 : null,
+        prevPage: page > 1 ? page - 1 : null,
+        perPage: limit,
+        totalResults,
+        totalCurrentResults,
+        lastPage: Math.ceil(totalResults / limit),
+      },
+    };
+  }
+
+  async create(data: IServiceRequest): Promise<IService> {
+    const createService = await this.repository.create({
+      data
+    })
+    return createService;
+  }
+
+  async update(id: string, data: IUpdateServiceRequest): Promise<IService> {
+    const serviceUpdate = await this.repository.update({
+      data: data,
+      where: {
+        id
+      }
+    })
+
+    return serviceUpdate;
+  }
+
+  async delete(id: string, user: string): Promise<void> {
+    await this.repository.delete({
+      where: {
+        id
+      }
+    })
+  }
+
+}

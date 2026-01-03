@@ -1,5 +1,6 @@
 import Decimal from "decimal.js";
 import { IBase } from "./Base";
+import z from "zod";
 
 
 export interface IService extends IBase, IServiceRequest { 
