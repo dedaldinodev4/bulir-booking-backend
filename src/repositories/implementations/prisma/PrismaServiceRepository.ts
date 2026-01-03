@@ -26,18 +26,14 @@ export class PrismaServiceRepository implements IServiceRepository {
   }
 
   async findAll(query: PaginationQuery): Promise<IResultPaginated> {
-    const { page, limit, order } = query;
+    const { page, limit } = query;
 
     const skip = (page - 1) * limit;
+    const order: "asc" | "desc" = query.order ?? "desc";
+    const orderByField = query.orderBy ?? "created_at";
     const where: any = {};
 
     //* Dynamic Sort *//
-    let orderBy: any = { created_at: 'desc' };
-    if (order) {
-      const [field, direction] = order.split(':');
-      orderBy = { [field]: direction === 'asc' ? 'asc' : 'desc' };
-    }
-
     const [items, totalResults] = await Promise.all([
       this.repository.findMany({
         include: {
@@ -53,7 +49,10 @@ export class PrismaServiceRepository implements IServiceRepository {
         skip,
         take: limit,
         where,
-        orderBy,
+        orderBy: [
+          { [orderByField]: order },
+          { id: "desc" }
+        ],
       }),
       this.repository.count({ where }),
     ]);

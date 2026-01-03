@@ -32,6 +32,7 @@ export const PaginationQuerySchema = z.object({
     .refine((v) => v > 0 && v <= 100, "limit must be between 1 and 100"),
 
   order: z.enum(["asc", "desc"]).optional().default("desc"),
+  orderBy: z.string().optional().default("created_at"),
 });
 
 export type PaginationQuery = z.infer<typeof PaginationQuerySchema>;

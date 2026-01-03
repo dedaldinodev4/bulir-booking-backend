@@ -11,8 +11,14 @@ export class FindAllServicesController {
     const page = parseInt(request.query.page as string);
     const limit = parseInt(request.query.limit as string);
     const order = request.query.order as 'asc' | 'desc';
+    const orderBy = request.query.orderBy as string;
     try {
-      const data = await this.findAllServicesUseCase.execute({page, limit, order})
+      const data = await this.findAllServicesUseCase.execute({
+        page, 
+        limit, 
+        order, 
+        orderBy
+      })
       return response.status(200).json(data);
 
     } catch (err: any) {
