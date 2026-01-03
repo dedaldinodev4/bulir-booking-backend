@@ -92,7 +92,8 @@ model Transaction {
   amount    Decimal
   type      TransactionType
   status    TransactionStatus @default(PENDING)
-  createdAt DateTime          @default(now())
+  created_at DateTime          @default(now())
+  updated_at DateTime          @updatedAt
 
   wallet  Wallet   @relation(fields: [walletId], references: [id])
   booking Booking? @relation(fields: [bookingId], references: [id])
