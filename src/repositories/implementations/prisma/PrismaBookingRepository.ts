@@ -6,7 +6,8 @@ import {
   IUpdateBookingRequest,
   IBookingWithTransactionRequest,
   BookingTransactionRefundResult,
-  BookingTransactionResult
+  BookingTransactionResult,
+  BookingCompletedResult
 } from "../../../dtos/Booking";
 import { IBookingRepository } from "../../IBookingRepository";
 import { IResultPaginated } from "../../../dtos/Pagination";
@@ -268,6 +269,14 @@ export class PrismaBookingRepository implements IBookingRepository {
     })
   }
 
+  async completed(id: string): Promise<IBooking> {
+    const booking = await this.repository.update({
+      where: { id },
+      data: { status: 'COMPLETED' }
+    });
+
+    return booking;
+  }
 
   async update(id: string, data: IUpdateBookingRequest): Promise<IBooking> {
     const BookingUpdate = await this.repository.update({
