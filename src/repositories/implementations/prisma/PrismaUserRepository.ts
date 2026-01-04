@@ -1,5 +1,10 @@
 import { prisma } from "../../../lib/prisma";
-import { IUserRequest, IUser, IUpdateUser, IUserCostum } from "../../../dtos/User";
+import { 
+  IUserRequest, 
+  IUser, 
+  IUpdateUser, 
+  IUserCostum 
+} from "../../../dtos/User";
 import { IUserRepository } from "../../IUserRepositoty";
 import { hashPassword } from "../../../utils/auth";
 
@@ -55,7 +60,6 @@ export class PrismaUserRepository implements IUserRepository {
 
   }
 
-
   async create(user: IUserRequest): Promise<IUserCostum> {
     const { name, identify, password, email, role } = user;
     const createUser = await this.repository.create({
@@ -82,11 +86,21 @@ export class PrismaUserRepository implements IUserRepository {
     return userUpdate;
   }
 
-  async delete(id: string, user: string): Promise<void> {
-    const userDelete = await this.repository.update({
+  async disable(id: string): Promise<IUserCostum> {
+    const userDisabled = await this.repository.update({
       data: {
         status: false
       },
+      where: {
+        id
+      }
+    })
+
+    return userDisabled;
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.repository.delete({
       where: {
         id
       }

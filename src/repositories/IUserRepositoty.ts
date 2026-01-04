@@ -8,5 +8,6 @@ export interface IUserRepository {
   findById(id: string): Promise<IUserCostum | null>;
   findByEmail(email: string): Promise<IUserCostum | null>;
   findByIdentity(email: string): Promise<IUserCostum | null>;
-  delete(id: string, user: string): Promise<void>;
+  disable(id: string): Promise<IUserCostum>;
+  delete(id: string): Promise<void>;
 }
