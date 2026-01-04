@@ -12,6 +12,7 @@ import {
   ICreateTransaction, 
   ICreateTransactionRequest 
 } from "./CreateTransactionDTO";
+import { IAuthRequest } from "../../../dtos/Auth";
 
 
 export class CreateTransactionUseCase {
@@ -22,7 +23,8 @@ export class CreateTransactionUseCase {
     private walletRepository: IWalletRepository,
   ) { }
 
-  async execute(data: ICreateTransactionRequest): Promise<ICreateTransaction | Error> {
+  async execute(user: IAuthRequest, 
+    data: ICreateTransactionRequest): Promise<ICreateTransaction | Error> {
     const { walletId, bookingId  } = data;
    
     const [ bookingExist, walletExist ] = await Promise.all([
@@ -37,6 +39,11 @@ export class CreateTransactionUseCase {
     if (!walletExist) {
       throw new Error('Wallet does not exist.')
     }
+
+    if ((user.role !== 'PROVIDER') && (user.role !== 'CLIENT')) {
+      throw new Error('Only providers and clients can create transaction.');
+    }
+    
     const result = await this.transactionRepository.create(data);
     return result;
   }

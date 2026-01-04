@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { CreateTransactionUseCase } from './CreateTransactionUseCase'
+import { IExpressRequest } from '../../../dtos/ExpressDTO';
 
 
 export class CreateTransactionController {
@@ -7,13 +8,19 @@ export class CreateTransactionController {
     private createTransactionUseCase: CreateTransactionUseCase
   ) { }
 
-  async handle(request: Request, response: Response): Promise<Response> {
+  async handle(request: IExpressRequest, response: Response): Promise<Response> {
     const { amount, status, bookingId, walletId, type } = request.body;
+    const { user } = request;
 
     try {
-      const data = await this.createTransactionUseCase.execute({
+      const data = await this.createTransactionUseCase.execute(
+        {
+          id: user?.id as string,
+          role: user?.role as "CLIENT" | "PROVIDER" | "ADMIN"
+        }, {
         amount, status, bookingId, walletId, type
-      });
+      }
+      );
 
       return response.status(201).json(data);
     } catch (err: any) {
