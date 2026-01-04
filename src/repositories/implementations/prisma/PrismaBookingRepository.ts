@@ -4,10 +4,8 @@ import {
   IBooking,
   ListBookingsQuery,
   IUpdateBookingRequest,
-  IBookingWithTransactionRequest,
   BookingTransactionRefundResult,
-  BookingTransactionResult,
-  BookingCompletedResult
+  BookingTransactionResult
 } from "../../../dtos/Booking";
 import { IBookingRepository } from "../../IBookingRepository";
 import { IResultPaginated } from "../../../dtos/Pagination";
@@ -251,6 +249,15 @@ export class PrismaBookingRepository implements IBookingRepository {
         }
       });
 
+      await tx.wallet.update({
+        where: { id: providerWallet.id },
+        data: {
+          balance: {
+            decrement: booking.price
+          }
+        }
+      });
+
       //* Update client wallet *//
       tx.transaction.create({
         data: {
@@ -262,9 +269,18 @@ export class PrismaBookingRepository implements IBookingRepository {
         }
       });
 
+      await tx.wallet.update({
+        where: { id: clientWallet.id },
+        data: {
+          balance: {
+            increment: booking.price
+          }
+        }
+      });
+
       return {
         bookingId: booking.id,
-        status: booking.status,
+        status: "CANCELLED",
       };
     })
   }

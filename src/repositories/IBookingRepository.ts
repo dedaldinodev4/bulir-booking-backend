@@ -5,8 +5,7 @@ import {
   IUpdateBookingRequest, 
   ListBookingsQuery,
   BookingTransactionResult,
-  BookingTransactionRefundResult,
-  BookingCompletedResult
+  BookingTransactionRefundResult
 } from "../dtos/Booking";
 import { IResultPaginated } from "../dtos/Pagination";
 

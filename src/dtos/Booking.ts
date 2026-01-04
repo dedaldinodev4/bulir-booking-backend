@@ -36,10 +36,6 @@ export interface BookingTransactionRefundResult {
   status: 'CONFIRMED' | "PENDING" | "CANCELLED" | "COMPLETED";
 } 
 
-export interface BookingCompletedResult {
-  bookingId: string;
-  status: 'CONFIRMED' | "PENDING" | "CANCELLED" | "COMPLETED";
-} 
 
 export interface IUpdateBookingRequest {
   status: BookingStatus;

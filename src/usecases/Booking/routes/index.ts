@@ -5,6 +5,8 @@ import { findByIdBookingFactory } from "../FindByIdBooking/FindByIdBookingFactor
 import { updateBookingFactory } from "../UpdateBooking/UpdateBookingFactory";
 import { deleteBookingFactory } from "../DeleteBooking/DeleteBookingFactory";
 import { createBookingFactory } from '../CreateBooking/CreateBookingFactory'
+import { cancelBookingFactory } from "../CancelBooking/CancelBookingFactory";
+
 import { ensuredAuthenticated } from "../../../middlewares/ensuredAuthenticated";
 
 export const bookingRoutes = Router();
@@ -17,5 +19,8 @@ bookingRoutes.route('/:id')
   .get((request, response) => { return findByIdBookingFactory().handle(request, response) } )
   .put((request, response) => { return updateBookingFactory().handle(request, response) } )
   
+bookingRoutes.route('/:id/cancel')
+  .put(ensuredAuthenticated(), (request, response) => { return cancelBookingFactory().handle(request, response) } )
+
 bookingRoutes.route('/:id/deletedBy/:user')
   .delete((request, response) => { return deleteBookingFactory().handle(request, response) } )
