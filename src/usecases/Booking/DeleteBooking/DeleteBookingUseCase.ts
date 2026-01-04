@@ -1,3 +1,4 @@
+import { IAuthRequest } from "../../../dtos/Auth";
 import {
   IBookingRepository
 } from "../../../repositories/IBookingRepository";
@@ -9,25 +10,22 @@ import {
 export class DeleteBookingUseCase {
 
   constructor(
-    private bookingRepository: IBookingRepository,
-    private userRepository: IUserRepository
+    private bookingRepository: IBookingRepository
   ) { }
 
-  async execute(id: string, user: string): Promise<void | Error> {
+  async execute(user: IAuthRequest, id: string): Promise<void | Error> {
 
     const bookingExists = await this.bookingRepository.findById(id);
-    const isAdmin = await this.userRepository.findById(user);
 
     if (!bookingExists) {
       throw new Error('Booking does not exists.');
     }
     
-    if (isAdmin?.role !== 'ADMIN' || !isAdmin) {
-      throw new Error('User Unauthorized.');
+    if (user.role !== 'ADMIN') {
+      throw new Error('Access danied.');
     }
     
-    const result = await this.bookingRepository.delete(id, user);
-
+    const result = await this.bookingRepository.delete(id);
     return result;
   }
 }

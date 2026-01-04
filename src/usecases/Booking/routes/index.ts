@@ -21,8 +21,16 @@ bookingRoutes.route('/')
   .get(ensuredAuthenticated(), (request, response) => { return findAllBookingsFactory().handle(request, response) })
 
 bookingRoutes.route('/:id')
-  .get(ensuredAuthenticated(), (request, response) => { return findByIdBookingFactory().handle(request, response) })
-  .put(ensuredAuthenticated(), (request, response) => { return updateBookingFactory().handle(request, response) })
+  .get(
+    ensuredAuthenticated(), 
+    (request, response) => { return findByIdBookingFactory().handle(request, response) })
+  .put(
+    ensuredAuthenticated(), 
+    (request, response) => { return updateBookingFactory().handle(request, response) })
+  .delete(
+    ensuredAuthenticated(),
+    is('ADMIN'),
+    (request, response) => { return deleteBookingFactory().handle(request, response) })
 
 bookingRoutes.route('/:id/cancel')
   .put(
@@ -36,7 +44,5 @@ bookingRoutes.route('/:id/complete')
     is('PROVIDER'),
     (request, response) => { return completeBookingFactory().handle(request, response) })
 
-bookingRoutes.route('/:id/deletedBy/:user')
-  .delete(
-    ensuredAuthenticated(),
-    (request, response) => { return deleteBookingFactory().handle(request, response) })
+
+  
