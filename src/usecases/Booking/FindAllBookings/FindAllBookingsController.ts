@@ -15,10 +15,11 @@ export class FindAllBookingsController {
     const serviceId = (request.query.serviceId as string);
     const providerId = (request.query.providerId as string);
     const clientId = (request.query.clientId as string);
+    const orderBy = (request.query.orderBy as string);
     const status = (request.query.status as BookingStatus)
     try {
       const data = await this.findAllBookingsUseCase.execute({
-        page, limit, order, serviceId, providerId, clientId, status
+        page, limit, order, serviceId, providerId, clientId, status, orderBy
       })
       return response.status(200).json(data);
 

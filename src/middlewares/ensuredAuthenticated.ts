@@ -15,8 +15,8 @@ export const ensuredAuthenticated = () => {
     }
     const [, token] = authHeaders.split(' ');
 
-
     try {
+      console.log('Authorization:', request.headers.authorization);
       const data = verify(token, env.JWT_SECRET) as {
         user: {
           email: string;

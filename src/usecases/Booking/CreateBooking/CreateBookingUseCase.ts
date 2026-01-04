@@ -1,3 +1,4 @@
+import { IAuthRequest } from "../../../dtos/Auth";
 import { 
   IBookingRepository 
 } from "../../../repositories/IBookingRepository";
@@ -5,6 +6,7 @@ import {
   IServiceRepository 
 } from "../../../repositories/IServiceRepository";
 import { IUserRepository } from "../../../repositories/IUserRepositoty";
+import { IWalletRepository } from "../../../repositories/IWalletRepository";
 import { 
   ICreateBooking, 
   ICreateBookingRequest 
@@ -16,22 +18,37 @@ export class CreateBookingUseCase {
   constructor(
     private bookingRepository: IBookingRepository,
     private serviceRepository: IServiceRepository,
-    private userBooking: IUserRepository,
+    private userRepository: IUserRepository,
   ) { }
 
-  async execute(data: ICreateBookingRequest): Promise<ICreateBooking | Error> {
-    const { clientId, serviceId  } = data;
-    const client = await this.userBooking.findById(clientId);
-    const serviceExist = await this.serviceRepository.findById(serviceId);
+  async execute(user: IAuthRequest, data: ICreateBookingRequest): 
+  Promise<ICreateBooking | Error> {
+    const { clientId, serviceId, providerId  } = data;
+    const client = await this.userRepository.findById(clientId);
+    const provider = await this.userRepository.findById(providerId);
+    const service = await this.serviceRepository.findById(serviceId);
     
-    if (client && client.role !== 'CLIENT') {
+    if (user.role !== 'CLIENT') {
       throw new Error('Only client can create bookings.');
     }
 
-    if (!serviceExist) {
+    if (!service) {
       throw new Error('Service does not exist.')
     }
-    const result = await this.bookingRepository.create(data);
+
+    if (service.providerId === user.id) {
+      throw new Error('Client cannot book own service.');
+    }
+
+    if (!client) {
+      throw new Error('Client does not exist.');
+    }
+
+    if (!provider) {
+      throw new Error('Client does not exist.');
+    }
+    
+    const result = await this.bookingRepository.createWithTransaction(data);
     return result;
   }
 }

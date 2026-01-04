@@ -5,6 +5,7 @@ import { findByIdBookingFactory } from "../FindByIdBooking/FindByIdBookingFactor
 import { updateBookingFactory } from "../UpdateBooking/UpdateBookingFactory";
 import { deleteBookingFactory } from "../DeleteBooking/DeleteBookingFactory";
 import { createBookingFactory } from '../CreateBooking/CreateBookingFactory'
+import { ensuredAuthenticated } from "../../../middlewares/ensuredAuthenticated";
 
 export const bookingRoutes = Router();
 

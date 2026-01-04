@@ -16,6 +16,21 @@ export interface IBookingRequest extends IUpdateBookingRequest {
   price: Decimal;
 }
 
+export interface IBookingWithTransactionRequest extends IUpdateBookingRequest {
+  serviceId: string;
+  clientId: string;
+  providerId: string;
+  clientWalletId: string;
+  providerWalletId: string;
+  price: Decimal;
+}
+
+export interface BookingTransactionResult {
+  bookingId: string;
+  status: 'CONFIRMED' | "PENDING" | "CANCELLED" | "COMPLETED";
+  price: Decimal;
+}
+
 export interface IUpdateBookingRequest {
   status: BookingStatus;
 }

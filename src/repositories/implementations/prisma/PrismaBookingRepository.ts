@@ -3,10 +3,13 @@ import {
   IBookingRequest,
   IBooking,
   ListBookingsQuery,
-  IUpdateBookingRequest
+  IUpdateBookingRequest,
+  IBookingWithTransactionRequest,
+  BookingTransactionResult
 } from "../../../dtos/Booking";
 import { IBookingRepository } from "../../IBookingRepository";
 import { IResultPaginated } from "../../../dtos/Pagination";
+import { IAuthRequest } from "../../../dtos/Auth";
 
 export class PrismaBookingRepository implements IBookingRepository {
   private repository = prisma.booking;
@@ -124,6 +127,85 @@ export class PrismaBookingRepository implements IBookingRepository {
     return createBooking;
   }
 
+  async createWithTransaction(data: IBookingRequest): 
+  Promise<BookingTransactionResult> {
+    const { clientId, providerId, price, serviceId } = data;
+
+    return prisma.$transaction(async (tx) => {
+      //* Wallets *//
+      const clientWallet = await tx.wallet.findUnique({
+        where: { userId: clientId }
+      });
+
+      const providerWallet = await tx.wallet.findUnique({
+        where: { userId: providerId }
+      });
+
+      if (!clientWallet || !providerWallet) {
+        throw new Error('Wallet not found');
+      }
+
+      //* Balance verify *//
+      if (clientWallet.balance.lt(price)) {
+        throw new Error(`Insufficient balance`);
+      }
+
+      //* create booking *//
+      const booking = await tx.booking.create({
+        data: {
+          clientId,
+          providerId,
+          serviceId,
+          price: price,
+          status: 'CONFIRMED'
+        }
+      });
+
+      //* create Transaction debit on client *//
+      await tx.transaction.create({
+        data: {
+          walletId: clientWallet.id,
+          bookingId: booking.id,
+          amount: booking.price,
+          type: 'DEBIT'
+        }
+      });
+
+      //* updated client wallet *//
+      await tx.wallet.update({
+        where: { id: clientWallet.id },
+        data: {
+          balance: { decrement: booking.price }
+        }
+      });
+
+      //* create Transaction CREDIT on provider *//
+      await tx.transaction.create({
+        data: {
+          walletId: providerWallet.id,
+          bookingId: booking.id,
+          amount: booking.price,
+          type: 'CREDIT'
+        }
+      });
+
+      //* updated provider wallet *//
+      await tx.wallet.update({
+        where: { id: providerWallet.id },
+        data: {
+          balance: { increment: booking.price }
+        }
+      });
+
+      return {
+        bookingId: booking.id,
+        status: booking.status,
+        price: booking.price
+      };
+    })
+  }
+
+
   async update(id: string, data: IUpdateBookingRequest): Promise<IBooking> {
     const BookingUpdate = await this.repository.update({
       data: data,
@@ -135,7 +217,7 @@ export class PrismaBookingRepository implements IBookingRepository {
     return BookingUpdate;
   }
 
-  async delete(id: string, user: string): Promise<void> {
+  async delete(id: string): Promise<void> {
     await this.repository.delete({
       where: {
         id
