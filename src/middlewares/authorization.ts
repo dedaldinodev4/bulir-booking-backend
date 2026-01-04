@@ -1,7 +1,9 @@
 import { NextFunction, Response } from "express";
 import { IExpressRequest } from "../dtos/ExpressDTO";
    
-export function is(roles: Array<'CLIENT' | 'PROVIDER' | 'ADMIN'>) {
+type Role = 'CLIENT' | 'PROVIDER' | 'ADMIN';
+
+export function is(...allowedRoles: Role[]) {
   return async (request: IExpressRequest, response: Response, next: NextFunction) => {
     const { user } = request;
 
@@ -9,10 +11,10 @@ export function is(roles: Array<'CLIENT' | 'PROVIDER' | 'ADMIN'>) {
       return response.status(400).json({ message: "User does not exists"});
     }
 
-    if (!roles.includes(user.role)) {
-      return response.status(403).json({ message: 'Access denied: insufficient role' });
+    if (!allowedRoles.includes(user.role)) {
+      return response.status(403).json({ message: 'Access denied.' });
     }
 
-    next();
+    return next();
   };
 }

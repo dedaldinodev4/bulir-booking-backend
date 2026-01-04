@@ -9,22 +9,34 @@ import { cancelBookingFactory } from "../CancelBooking/CancelBookingFactory";
 import { completeBookingFactory } from "../CompleteBooking/CompleteBookingFactory";
 
 import { ensuredAuthenticated } from "../../../middlewares/ensuredAuthenticated";
+import { is } from "../../../middlewares/authorization";
 
 export const bookingRoutes = Router();
 
 bookingRoutes.route('/')
-  .post(ensuredAuthenticated(), (request, response) => { return createBookingFactory().handle(request, response) } )
-  .get((request, response) => { return findAllBookingsFactory().handle(request, response) } )
+  .post(
+    ensuredAuthenticated(),
+    is('CLIENT'),
+    (request, response) => { return createBookingFactory().handle(request, response) })
+  .get(ensuredAuthenticated(), (request, response) => { return findAllBookingsFactory().handle(request, response) })
 
 bookingRoutes.route('/:id')
-  .get((request, response) => { return findByIdBookingFactory().handle(request, response) } )
-  .put((request, response) => { return updateBookingFactory().handle(request, response) } )
-  
+  .get(ensuredAuthenticated(), (request, response) => { return findByIdBookingFactory().handle(request, response) })
+  .put(ensuredAuthenticated(), (request, response) => { return updateBookingFactory().handle(request, response) })
+
 bookingRoutes.route('/:id/cancel')
-  .put(ensuredAuthenticated(), (request, response) => { return cancelBookingFactory().handle(request, response) } )
-  
+  .put(
+    ensuredAuthenticated(),
+    is('CLIENT', 'PROVIDER'),
+    (request, response) => { return cancelBookingFactory().handle(request, response) })
+
 bookingRoutes.route('/:id/complete')
-  .put(ensuredAuthenticated(), (request, response) => { return completeBookingFactory().handle(request, response) } )
+  .put(
+    ensuredAuthenticated(),
+    is('PROVIDER'),
+    (request, response) => { return completeBookingFactory().handle(request, response) })
 
 bookingRoutes.route('/:id/deletedBy/:user')
-  .delete((request, response) => { return deleteBookingFactory().handle(request, response) } )
+  .delete(
+    ensuredAuthenticated(),
+    (request, response) => { return deleteBookingFactory().handle(request, response) })

@@ -15,8 +15,8 @@ export class CancelBookingUseCase {
 
     const booking = await this.bookingRepository.findById(id);
     
-    if (user.role !== 'CLIENT') {
-      throw new Error(`Only client can create bookings`);
+    if ((user.role !== 'CLIENT') && (user.role !== 'PROVIDER')) {
+      throw new Error(`Only client and provider can cancel bookings.`);
     }
 
     if (!booking) {
