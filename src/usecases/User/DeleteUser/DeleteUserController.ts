@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { DeleteUserUseCase } from './DeleteUserUseCase'
+import { IExpressRequest } from '../../../dtos/ExpressDTO';
 
 
 export class DeleteUserController {
@@ -7,11 +8,15 @@ export class DeleteUserController {
     private deleteUserUseCase: DeleteUserUseCase
   ) { }
 
-  async handle(request: Request, response: Response): Promise<Response> {
-    const { id, user } = request.params;
+  async handle(request: IExpressRequest, response: Response): Promise<Response> {
+    const { id } = request.params;
+    const { user } = request;
 
     try {
-      const data = await this.deleteUserUseCase.execute(id, user);
+      const data = await this.deleteUserUseCase.execute({
+        id: user?.id as string,
+        role: user?.role as "CLIENT" | "PROVIDER" | "ADMIN"
+      }, id);
 
       return response.status(204).end();
     } catch (err: any) {
