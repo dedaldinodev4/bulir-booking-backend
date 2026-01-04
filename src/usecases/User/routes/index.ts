@@ -8,19 +8,36 @@ import { updateUserFactory } from "../UpdateUser/UpdateUserFactory";
 import { deleteUserFactory } from "../DeleteUser/DeleteUserFactory";
 import { createUserFactory } from '../CreateUser/CreateUserFactory';
 
+import { ensuredAuthenticated } from "../../../middlewares/ensuredAuthenticated";
+import { is } from "../../../middlewares/authorization";
+
+
 export const userRoutes = Router();
 
 userRoutes.route('/')
-  .post((request, response) => { return createUserFactory().handle(request, response) } )
-  .get((request, response) => { return findAllUsersFactory().handle(request, response) } )
+  .post(
+    ensuredAuthenticated(),
+    is('ADMIN'),
+    (request, response) => { return createUserFactory().handle(request, response) })
+  .get(
+    ensuredAuthenticated(),
+    (request, response) => { return findAllUsersFactory().handle(request, response) })
 
 userRoutes.route('/:id')
-  .get((request, response) => { return findByIdUserFactory().handle(request, response) } )
-  .put((request, response) => { return updateUserFactory().handle(request, response) } )
-  
+  .get(
+    ensuredAuthenticated(),
+    (request, response) => { return findByIdUserFactory().handle(request, response) })
+  .put(
+    ensuredAuthenticated(),
+    (request, response) => { return updateUserFactory().handle(request, response) })
+  .delete(
+    ensuredAuthenticated(),
+    is('ADMIN'),
+    (request, response) => { return deleteUserFactory().handle(request, response) })
+
 userRoutes.route('/byEmail/:email')
-  .get((request, response) => { return findByEmailUserFactory().handle(request, response) } )
-  
-userRoutes.route('/:id/deletedBy/:user')
-  .delete((request, response) => { return deleteUserFactory().handle(request, response) } )
-  
+  .get(
+    ensuredAuthenticated(),
+    (request, response) => { return findByEmailUserFactory().handle(request, response) })
+
+
