@@ -58,7 +58,7 @@ export class PrismaWalletRepository implements IWalletRepository {
     return walletUpdate;
   }
 
-  async delete(id: string, user: string): Promise<void> {
+  async delete(id: string): Promise<void> {
     await this.repository.delete({
       where: {
         id

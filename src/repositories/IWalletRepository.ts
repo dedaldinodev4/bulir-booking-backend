@@ -9,5 +9,5 @@ export interface IWalletRepository {
   findAll():Promise<IWallet[]>;
   findById(id: string): Promise<IWallet | null>;
   findByUser(userId: string): Promise<IWallet | null>;
-  delete(id: string, user: string): Promise<void>;
+  delete(id: string): Promise<void>;
 }
