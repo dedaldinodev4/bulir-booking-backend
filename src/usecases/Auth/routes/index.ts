@@ -9,10 +9,10 @@ import { signUpFactory } from "../SignUp/SignUpFactory";
 export const authRoutes = Router();
 
 authRoutes.route('/login')
-  .post((request, response) => { return signUpFactory().handle(request, response) } )
-
-authRoutes.route('/register')
   .post((request, response) => { return signInFactory().handle(request, response) } )
 
+authRoutes.route('/register')
+  .post((request, response) => { return signUpFactory().handle(request, response) } )
+  
 authRoutes.route('/credentials/:id')
   .put((request, response) => { return updateCredentialsFactory().handle(request, response) } )
