@@ -33,4 +33,5 @@ ENV NODE_ENV=production
 
 EXPOSE 3333
 
-CMD ["npm", "run", "start"]
+COPY entrypoint.sh .
+CMD ["./entrypoint.sh"]
