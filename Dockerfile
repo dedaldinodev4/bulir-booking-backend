@@ -33,4 +33,4 @@ ENV NODE_ENV=production
 
 EXPOSE 3333
 
-CMD sh -c "npx prisma migrate deploy && npx prisma db seed && node dist/server.js"
+CMD ["npm", "run", "start"]
