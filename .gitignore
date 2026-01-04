@@ -11,10 +11,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Prisma
-prisma/migrations/
-prisma/generated
-
 # Docker
 .docker/
 docker-data/
