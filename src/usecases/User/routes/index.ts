@@ -7,6 +7,7 @@ import { findByEmailUserFactory } from "../FindByEmailUser/FindByEmailUserFactor
 import { updateUserFactory } from "../UpdateUser/UpdateUserFactory";
 import { deleteUserFactory } from "../DeleteUser/DeleteUserFactory";
 import { createUserFactory } from '../CreateUser/CreateUserFactory';
+import { disableUserFactory } from "../DisableUser/DisableUserFactory";
 
 import { ensuredAuthenticated } from "../../../middlewares/ensuredAuthenticated";
 import { is } from "../../../middlewares/authorization";
@@ -34,6 +35,12 @@ userRoutes.route('/:id')
     ensuredAuthenticated(),
     is('ADMIN'),
     (request, response) => { return deleteUserFactory().handle(request, response) })
+
+userRoutes.route('/:id/disable')
+  .get(
+    ensuredAuthenticated(),
+    is('ADMIN', 'CLIENT', 'PROVIDER'),
+    (request, response) => { return disableUserFactory().handle(request, response) })
 
 userRoutes.route('/byEmail/:email')
   .get(
