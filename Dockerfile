@@ -33,5 +33,8 @@ ENV NODE_ENV=production
 
 EXPOSE 3333
 
-COPY entrypoint.sh .
-CMD ["./entrypoint.sh"]
+CMD sh -c "\
+  echo '📦 Running Prisma migrations...' && \
+  npx prisma migrate deploy && \
+  echo '🚀 Starting API...' && \
+  npm run start"
