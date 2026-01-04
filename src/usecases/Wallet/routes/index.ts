@@ -7,18 +7,31 @@ import { deleteWalletFactory } from "../DeleteWallet/DeleteWalletFactory";
 import { createWalletFactory } from '../CreateWallet/CreateWalletFactory'
 import { findByUserWalletFactory } from "../FindByUserWallet/FindByUserWalletFactory";
 
+import { ensuredAuthenticated } from "../../../middlewares/ensuredAuthenticated";
+import { is } from "../../../middlewares/authorization";
+
 export const walletRoutes = Router();
 
 walletRoutes.route('/')
-  .post((request, response) => { return createWalletFactory().handle(request, response) } )
+  .post(
+    ensuredAuthenticated(),
+    is('PROVIDER', 'CLIENT'),
+    (request, response) => { return createWalletFactory().handle(request, response) } )
   .get((request, response) => { return findAllWalletsFactory().handle(request, response) } )
 
 walletRoutes.route('/:id')
-  .get((request, response) => { return findByIdWalletFactory().handle(request, response) } )
-  .put((request, response) => { return updateWalletFactory().handle(request, response) } )
-  
-walletRoutes.route('/:id/deletedBy/:user')
-  .delete((request, response) => { return deleteWalletFactory().handle(request, response) } )
+  .get(
+    ensuredAuthenticated(),
+    (request, response) => { return findByIdWalletFactory().handle(request, response) } )
+  .put(
+    ensuredAuthenticated(),
+    (request, response) => { return updateWalletFactory().handle(request, response) } )
+  .delete(
+    ensuredAuthenticated(),
+    is('ADMIN'),
+    (request, response) => { return deleteWalletFactory().handle(request, response) } )
 
 walletRoutes.route('/byUser/:userId')
-  .get((request, response) => { return findByUserWalletFactory().handle(request, response) } )
+  .get(
+    ensuredAuthenticated(),
+    (request, response) => { return findByUserWalletFactory().handle(request, response) } )
