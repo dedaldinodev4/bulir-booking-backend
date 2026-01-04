@@ -6,6 +6,7 @@ import { updateBookingFactory } from "../UpdateBooking/UpdateBookingFactory";
 import { deleteBookingFactory } from "../DeleteBooking/DeleteBookingFactory";
 import { createBookingFactory } from '../CreateBooking/CreateBookingFactory'
 import { cancelBookingFactory } from "../CancelBooking/CancelBookingFactory";
+import { completeBookingFactory } from "../CompleteBooking/CompleteBookingFactory";
 
 import { ensuredAuthenticated } from "../../../middlewares/ensuredAuthenticated";
 
@@ -21,6 +22,9 @@ bookingRoutes.route('/:id')
   
 bookingRoutes.route('/:id/cancel')
   .put(ensuredAuthenticated(), (request, response) => { return cancelBookingFactory().handle(request, response) } )
+  
+bookingRoutes.route('/:id/complete')
+  .put(ensuredAuthenticated(), (request, response) => { return completeBookingFactory().handle(request, response) } )
 
 bookingRoutes.route('/:id/deletedBy/:user')
   .delete((request, response) => { return deleteBookingFactory().handle(request, response) } )
