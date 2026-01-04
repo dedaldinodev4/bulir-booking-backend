@@ -9,9 +9,9 @@ export interface ICurrentUser {
   user: {
     id: string;
     name: string;
-    identify: string;
     email: string;
-    status: boolean;
-    role: 'ADMIN' | 'CLIENT' | 'PROVIDER'
-  }
+    identify: string;
+    role: 'ADMIN' | 'CLIENT' | 'PROVIDER';
+  };
+  expiresIn: number;
 }

@@ -14,7 +14,7 @@ export const checkUnEncryptedPasswordIsValid = (unEncryptedPassword: string, pas
 export const convertUserLogged = (user: IUser): IAuthRequest => {
   const { id, email, name, role, identify, status } = user;
    const data:IAuthRequest = {
-    id, name, role, identify, email, status
+    id, role
    }
    return data;
 }

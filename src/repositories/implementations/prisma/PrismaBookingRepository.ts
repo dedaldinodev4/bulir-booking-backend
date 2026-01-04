@@ -167,7 +167,8 @@ export class PrismaBookingRepository implements IBookingRepository {
           walletId: clientWallet.id,
           bookingId: booking.id,
           amount: booking.price,
-          type: 'DEBIT'
+          type: 'DEBIT',
+          status: "PAID"
         }
       });
 
@@ -185,7 +186,8 @@ export class PrismaBookingRepository implements IBookingRepository {
           walletId: providerWallet.id,
           bookingId: booking.id,
           amount: booking.price,
-          type: 'CREDIT'
+          type: 'CREDIT',
+          status: "PAID"
         }
       });
 

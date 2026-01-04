@@ -33,7 +33,7 @@ export const ensuredAuthenticated = () => {
         role: decoded.role
       };
 
-      return next();
+      next();
     } catch (err) {
       return response.status(401).json({ message: 'Invalid token'})
     }

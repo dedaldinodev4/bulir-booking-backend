@@ -8,18 +8,14 @@ export class CreateBookingController {
     private createBookingUseCase: CreateBookingUseCase
   ) { }
 
-  async handle(request: Request, response: Response): Promise<Response> {
-    console.log('Chegou no controller');
+  async handle(request: IExpressRequest, response: Response): Promise<Response> {
     const { price, status, clientId, serviceId, providerId } = request.body;
+    const user = request.user;
 
     try {
       const data = await this.createBookingUseCase.execute({
-        id: "3982733f-a532-4b75-b780-7186c29e640c",
-        name: "",
-        email: "",
-        identify: "",
-        role: "CLIENT",
-        status: true
+        id: user?.id as string,
+        role: user?.role as "CLIENT" | "PROVIDER" | "ADMIN"
       }, {
         price, status, clientId, serviceId, providerId
       });

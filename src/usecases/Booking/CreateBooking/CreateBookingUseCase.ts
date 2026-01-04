@@ -29,7 +29,7 @@ export class CreateBookingUseCase {
     const service = await this.serviceRepository.findById(serviceId);
     
     if (user.role !== 'CLIENT') {
-      throw new Error('Only client can create bookings.');
+      throw new Error(`Only client can create bookings`);
     }
 
     if (!service) {

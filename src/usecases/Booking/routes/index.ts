@@ -10,7 +10,7 @@ import { ensuredAuthenticated } from "../../../middlewares/ensuredAuthenticated"
 export const bookingRoutes = Router();
 
 bookingRoutes.route('/')
-  .post((request, response) => { return createBookingFactory().handle(request, response) } )
+  .post(ensuredAuthenticated(), (request, response) => { return createBookingFactory().handle(request, response) } )
   .get((request, response) => { return findAllBookingsFactory().handle(request, response) } )
 
 bookingRoutes.route('/:id')

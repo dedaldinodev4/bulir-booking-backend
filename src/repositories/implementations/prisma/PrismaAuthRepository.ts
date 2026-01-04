@@ -37,15 +37,22 @@ export class PrismaAuthRepository implements IAuthRepository {
     if (user) {
       if (checkUnEncryptedPasswordIsValid(password, user.password)) {
 
-        const userCurrent: IAuthRequest = convertUserLogged(user)
-
         const token = jwt.sign(
-          { user: userCurrent }, env.JWT_SECRET, { expiresIn: "30d" }
+          { sub: user.id, role: user.role }, 
+          env.JWT_SECRET, 
+          { expiresIn: "1h" }
         );
 
         return {
-          user: userCurrent,
-          token
+          user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            identify: user.identify,
+            role: user.role
+          },
+          token,
+          expiresIn: 3600
         }
       }
     }

@@ -11,7 +11,14 @@ export interface IAuthRequest {
 
 export interface ICurrentUser {
   token: string;
-  user: IAuthRequest;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    identify: string;
+    role: 'ADMIN' | 'CLIENT' | 'PROVIDER';
+  };
+  expiresIn: number;
 }
 
 export interface IUpdateCredentialsRequest {
