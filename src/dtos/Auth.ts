@@ -4,6 +4,14 @@ export interface ISignInRequest {
   password: string;
 }
 
+export interface ISignUpRequest {
+  name: string;
+  email: string;
+  identify: string;
+  password: string;
+  role: 'ADMIN' | 'CLIENT' | 'PROVIDER';
+}
+
 export interface IAuthRequest {
   id: string;
   role: 'ADMIN' | 'CLIENT' | 'PROVIDER'

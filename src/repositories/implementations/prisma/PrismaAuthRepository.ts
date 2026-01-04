@@ -3,14 +3,15 @@ import { prisma } from "../../../lib/prisma";
 import {
   ICurrentUser,
   ISignInRequest,
-  IAuthRequest, 
-  IUpdateCredentialsRequest
+  IAuthRequest,
+  IUpdateCredentialsRequest,
+  ISignUpRequest
 } from "../../../dtos/Auth";
 import { IAuthRepository } from "../../IAuthRepository";
-import { 
-  checkUnEncryptedPasswordIsValid, 
-  convertUserLogged, 
-  hashPassword 
+import {
+  checkUnEncryptedPasswordIsValid,
+  convertUserLogged,
+  hashPassword
 } from '../../../utils/auth';
 import { IUser } from '../../../dtos/User';
 import { env } from '../../../env';
@@ -24,22 +25,22 @@ export class PrismaAuthRepository implements IAuthRepository {
     const { data, password } = credentials
 
     const user = await this.repository.findFirst(
-    {
-      where: { 
-        OR: [
-          { email : data },
-          { identify: data },
-        ],
-        status: true
-      }
-    });
+      {
+        where: {
+          OR: [
+            { email: data },
+            { identify: data },
+          ],
+          status: true
+        }
+      });
 
     if (user) {
       if (checkUnEncryptedPasswordIsValid(password, user.password)) {
 
         const token = jwt.sign(
-          { sub: user.id, role: user.role }, 
-          env.JWT_SECRET, 
+          { sub: user.id, role: user.role },
+          env.JWT_SECRET,
           { expiresIn: "1h" }
         );
 
@@ -57,6 +58,38 @@ export class PrismaAuthRepository implements IAuthRepository {
       }
     }
     return new Error('User does not exist.');
+  }
+
+  async signUp(data: ISignUpRequest): Promise<ICurrentUser | Error> {
+    const { email, identify, name, password, role } = data;
+
+    const user = await this.repository.create({
+      data: {
+        name,
+        email,
+        role,
+        password: hashPassword(password),
+        identify
+      }
+    })
+
+    const token = jwt.sign(
+      { sub: user.id, role: user.role },
+      env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    return {
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        identify: user.identify,
+        role: user.role
+      },
+      token,
+      expiresIn: 3600
+    }
   }
 
   async updateCredentials(id: string, credentials: IUpdateCredentialsRequest):
