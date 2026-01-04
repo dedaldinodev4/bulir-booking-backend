@@ -31,6 +31,11 @@ export interface BookingTransactionResult {
   price: Decimal;
 }
 
+export interface BookingTransactionRefundResult {
+  bookingId: string;
+  status: 'CONFIRMED' | "PENDING" | "CANCELLED" | "COMPLETED";
+} 
+
 export interface IUpdateBookingRequest {
   status: BookingStatus;
 }

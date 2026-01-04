@@ -5,11 +5,11 @@ import {
   ListBookingsQuery,
   IUpdateBookingRequest,
   IBookingWithTransactionRequest,
+  BookingTransactionRefundResult,
   BookingTransactionResult
 } from "../../../dtos/Booking";
 import { IBookingRepository } from "../../IBookingRepository";
 import { IResultPaginated } from "../../../dtos/Pagination";
-import { IAuthRequest } from "../../../dtos/Auth";
 
 export class PrismaBookingRepository implements IBookingRepository {
   private repository = prisma.booking;
@@ -203,6 +203,67 @@ export class PrismaBookingRepository implements IBookingRepository {
         bookingId: booking.id,
         status: booking.status,
         price: booking.price
+      };
+    })
+  }
+
+  async cancelled(id: string): 
+  Promise<BookingTransactionRefundResult> {
+
+    return prisma.$transaction(async (tx) => {
+
+      const booking = await tx.booking.findUnique({
+       where: { id } 
+      });
+      if (!booking) {
+        throw new Error('Booking does not exist.')
+      }
+      const { clientId, providerId } = booking;
+
+      //* Wallets *//
+      const clientWallet = await tx.wallet.findUnique({
+        where: { userId: clientId }
+      });
+
+      const providerWallet = await tx.wallet.findUnique({
+        where: { userId: providerId }
+      });
+
+      if (!clientWallet || !providerWallet) {
+        throw new Error('Wallet not found');
+      }
+      
+      //* Booking cancelled *//
+      await tx.booking.update({
+        where: { id },
+        data: { status: 'CANCELLED' }
+      });
+
+      //* Update provider wallet *//
+      tx.transaction.create({
+        data: {
+          walletId: providerWallet.id,
+          bookingId: id,
+          amount: booking.price,
+          type: 'DEBIT',
+          status: "REFUNDED"
+        }
+      });
+
+      //* Update client wallet *//
+      tx.transaction.create({
+        data: {
+          walletId: clientWallet.id,
+          bookingId: id,
+          amount: booking.price,
+          type: 'CREDIT',
+          status: "REFUNDED"
+        }
+      });
+
+      return {
+        bookingId: booking.id,
+        status: booking.status,
       };
     })
   }
