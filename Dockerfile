@@ -33,8 +33,4 @@ ENV NODE_ENV=production
 
 EXPOSE 3333
 
-CMD sh -c "\
-  echo '📦 Running Prisma migrations...' && \
-  npx prisma migrate deploy && \
-  echo '🚀 Starting API...' && \
-  npm run start"
+CMD sh -c "echo '📦 Running Prisma migrations...' && npx prisma migrate deploy && echo '🚀 Starting API...' && npm run start"
