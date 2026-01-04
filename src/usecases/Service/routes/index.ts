@@ -15,7 +15,7 @@ export const serviceRoutes = Router();
 serviceRoutes.route('/')
   .post(
     ensuredAuthenticated(),
-    is('PROVIDER', 'ADMIN'),
+    is('PROVIDER'),
     (request, response) => { return createServiceFactory().handle(request, response) } )
   .get(
     ensuredAuthenticated(),
