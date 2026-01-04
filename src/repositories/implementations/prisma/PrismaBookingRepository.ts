@@ -239,7 +239,7 @@ export class PrismaBookingRepository implements IBookingRepository {
       });
 
       //* Update provider wallet *//
-      tx.transaction.create({
+      await tx.transaction.create({
         data: {
           walletId: providerWallet.id,
           bookingId: id,
@@ -259,7 +259,7 @@ export class PrismaBookingRepository implements IBookingRepository {
       });
 
       //* Update client wallet *//
-      tx.transaction.create({
+      await tx.transaction.create({
         data: {
           walletId: clientWallet.id,
           bookingId: id,
