@@ -1,33 +1,28 @@
+import { IAuthRequest } from "../../../dtos/Auth";
 import {
   IServiceRepository
 } from "../../../repositories/IServiceRepository";
-import { 
-  IUserRepository 
-} from "../../../repositories/IUserRepositoty";
 
 
 export class DeleteServiceUseCase {
 
   constructor(
-    private serviceRepository: IServiceRepository,
-    private userRepository: IUserRepository
+    private serviceRepository: IServiceRepository
   ) { }
 
-  async execute(id: string, user: string): Promise<void | Error> {
+  async execute(user: IAuthRequest, id: string): Promise<void | Error> {
 
     const serviceExists = await this.serviceRepository.findById(id);
-    const isAdmin = await this.userRepository.findById(user);
-
+  
     if (!serviceExists) {
       throw new Error('Service does not exists.');
     }
     
-    if (isAdmin?.role !== 'ADMIN' || !isAdmin) {
-      throw new Error('User Unauthorized.');
+    if (user.role !== 'ADMIN') {
+      throw new Error('Access danied.');
     }
     
-    const result = await this.serviceRepository.delete(id, user);
-
+    const result = await this.serviceRepository.delete(id);
     return result;
   }
 }

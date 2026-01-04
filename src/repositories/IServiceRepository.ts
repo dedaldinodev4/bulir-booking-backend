@@ -13,5 +13,5 @@ export interface IServiceRepository {
   findAll(query: PaginationQuery):Promise<IResultPaginated>;
   findById(id: string): Promise<IService | null>;
   findByProvider(providerId: string): Promise<IService[]>;
-  delete(id: string, user: string): Promise<void>;
+  delete(id: string): Promise<void>;
 }
