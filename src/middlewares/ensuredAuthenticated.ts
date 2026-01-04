@@ -3,6 +3,11 @@ import { verify } from 'jsonwebtoken';
 import { IExpressRequest } from '../dtos/ExpressDTO';
 import { env } from '../env';
 
+interface JwtPayload {
+  sub: string;
+  role: 'CLIENT' | 'PROVIDER' | 'ADMIN';
+}
+
 //* ensuredAuthenticated *//
 export const ensuredAuthenticated = () => {
 
@@ -13,26 +18,24 @@ export const ensuredAuthenticated = () => {
     if (!authHeaders) {
       return response.status(401).json({ error: 'Token is missing' });
     }
-    const [, token] = authHeaders.split(' ');
+    const [type, token] = authHeaders.split(' ');
+
+    if (type !== 'Bearer' || !token) {
+      return response.status(401).json({ message: 'Invalid token format' });
+    }
 
     try {
-      console.log('Authorization:', request.headers.authorization);
-      const data = verify(token, env.JWT_SECRET) as {
-        user: {
-          email: string;
-          name: string;
-          identify: string;
-          id: string;
-          role: 'ADMIN' | 'CLIENT' | 'PROVIDER';
-          status: boolean;
-        }
+      
+      const decoded = verify(token, env.JWT_SECRET) as JwtPayload;
+
+      request.user = {
+        id: decoded.sub,
+        role: decoded.role
       };
 
-      const { user } = data;
-      request.user = user
       return next();
     } catch (err) {
-      return response.status(401).json({ error: err })
+      return response.status(401).json({ message: 'Invalid token'})
     }
   }
 

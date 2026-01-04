@@ -6,11 +6,7 @@ export interface ISignInRequest {
 
 export interface IAuthRequest {
   id: string;
-  name: string;
-  identify: string;
-  email: string;
   role: 'ADMIN' | 'CLIENT' | 'PROVIDER'
-  status: boolean;
 }
 
 export interface ICurrentUser {
