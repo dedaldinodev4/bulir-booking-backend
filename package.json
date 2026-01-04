@@ -6,9 +6,11 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "seed": "npx prisma db seed",
+    "build": "tsup src",
+    "start": "node dist/index.js",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage"
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate deploy"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -51,6 +53,7 @@
     "prisma": "^6.19.1",
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.6",
+    "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
