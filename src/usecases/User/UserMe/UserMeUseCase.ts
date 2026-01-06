@@ -15,7 +15,7 @@ export class UserMeUseCase {
     const userExists = await this.userRepository.findById(id);
 
     if (!userExists) {
-      throw new Error("User does exists.");
+      throw new Error(`User does exists, ${id}`);
     }
     
     return {

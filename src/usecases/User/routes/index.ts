@@ -38,7 +38,7 @@ userRoutes.route('/:id')
     (request, response) => { return deleteUserFactory().handle(request, response) })
 
 userRoutes.route('/:id/disable')
-  .get(
+  .put(
     ensuredAuthenticated(),
     is('ADMIN', 'CLIENT', 'PROVIDER'),
     (request, response) => { return disableUserFactory().handle(request, response) })
