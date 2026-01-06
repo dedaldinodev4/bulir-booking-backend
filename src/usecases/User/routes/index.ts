@@ -8,6 +8,7 @@ import { updateUserFactory } from "../UpdateUser/UpdateUserFactory";
 import { deleteUserFactory } from "../DeleteUser/DeleteUserFactory";
 import { createUserFactory } from '../CreateUser/CreateUserFactory';
 import { disableUserFactory } from "../DisableUser/DisableUserFactory";
+import { userMeFactory } from "../UserMe/UserMeFactory";
 
 import { ensuredAuthenticated } from "../../../middlewares/ensuredAuthenticated";
 import { is } from "../../../middlewares/authorization";
@@ -46,5 +47,10 @@ userRoutes.route('/byEmail/:email')
   .get(
     ensuredAuthenticated(),
     (request, response) => { return findByEmailUserFactory().handle(request, response) })
+
+userRoutes.route('/me')
+  .get(
+    ensuredAuthenticated(),
+    (request, response) => { return userMeFactory().handle(request, response) })
 
 
