@@ -15,7 +15,22 @@ import { is } from "../../../middlewares/authorization";
 
 
 export const userRoutes = Router();
+userRoutes.route('/me')
+  .get(
+    ensuredAuthenticated(),
+    (request, response) => { return userMeFactory().handle(request, response) })
 
+userRoutes.route('/byEmail/:email')
+  .get(
+    ensuredAuthenticated(),
+    (request, response) => { return findByEmailUserFactory().handle(request, response) })
+
+userRoutes.route('/:id/disable')
+  .put(
+    ensuredAuthenticated(),
+    is('ADMIN', 'CLIENT', 'PROVIDER'),
+    (request, response) => { return disableUserFactory().handle(request, response) })
+    
 userRoutes.route('/')
   .post(
     ensuredAuthenticated(),
@@ -37,20 +52,10 @@ userRoutes.route('/:id')
     is('ADMIN'),
     (request, response) => { return deleteUserFactory().handle(request, response) })
 
-userRoutes.route('/:id/disable')
-  .put(
-    ensuredAuthenticated(),
-    is('ADMIN', 'CLIENT', 'PROVIDER'),
-    (request, response) => { return disableUserFactory().handle(request, response) })
 
-userRoutes.route('/byEmail/:email')
-  .get(
-    ensuredAuthenticated(),
-    (request, response) => { return findByEmailUserFactory().handle(request, response) })
 
-userRoutes.route('/me')
-  .get(
-    ensuredAuthenticated(),
-    (request, response) => { return userMeFactory().handle(request, response) })
+
+
+
 
 
