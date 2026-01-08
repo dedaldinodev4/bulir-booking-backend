@@ -12,12 +12,12 @@ export class SignInUseCase {
   async execute(data: ISignInRequest): Promise<ICurrentUser | Error> {
 
     if (!data) {
-      throw new Error('Email or Password invalid.')
+      throw new Error('Data and Password are required.')
     }
 
     const user = await this.authRepository.signIn(data);
     if (user instanceof Error) {
-      throw new Error('Email or Password invalid.')
+      throw new Error('Invalid data or password.')
     }
     return user;
   }
