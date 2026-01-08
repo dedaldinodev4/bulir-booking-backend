@@ -17,10 +17,14 @@ export class UserMeUseCase {
     if (!userExists) {
       throw new Error(`User does exists`);
     }
+    const { role, email, name, identify } = userExists;
     
     return {
       id,
-      role: userExists.role
+      role,
+      email, 
+      name, 
+      identify
     }
   }
 }
