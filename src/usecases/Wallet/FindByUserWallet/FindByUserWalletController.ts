@@ -11,8 +11,8 @@ export class FindByUserWalletController {
 
   async handle(request: Request, response: Response): Promise<Response> {
     try {
-      const { id_user } = request.params
-      const data = await this.findByUserWalletUseCase.execute(id_user)
+      const { userId } = request.params
+      const data = await this.findByUserWalletUseCase.execute(userId)
       return response.status(200).json(data);
 
     } catch (err: any) {
