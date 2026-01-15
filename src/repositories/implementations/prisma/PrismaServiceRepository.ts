@@ -34,7 +34,7 @@ export class PrismaServiceRepository implements IServiceRepository {
     const skip = (page - 1) * limit;
     const order: "asc" | "desc" = query.order ?? "desc";
     const orderByField = query.orderBy ?? "created_at";
-    const where: any = {};
+    const where: any = { status: true };
 
     //* Dynamic Sort *//
     const [items, totalResults] = await Promise.all([
