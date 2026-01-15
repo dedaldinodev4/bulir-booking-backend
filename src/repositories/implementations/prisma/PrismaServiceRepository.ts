@@ -21,6 +21,9 @@ export class PrismaServiceRepository implements IServiceRepository {
     const services = await this.repository.findMany(
       {
         where: { providerId },
+        orderBy: {
+          name: "desc"
+        }
       });
     return services;
   }
@@ -94,7 +97,10 @@ export class PrismaServiceRepository implements IServiceRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await this.repository.delete({
+    await this.repository.update({
+      data: {
+        status: false
+      },
       where: {
         id
       }
