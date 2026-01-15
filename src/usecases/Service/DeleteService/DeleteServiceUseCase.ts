@@ -18,7 +18,7 @@ export class DeleteServiceUseCase {
       throw new Error('Service does not exists.');
     }
     
-    if (user.role !== 'ADMIN') {
+    if ((user.role !== 'ADMIN') && (user.role !== 'PROVIDER')) {
       throw new Error('Access danied.');
     }
     
