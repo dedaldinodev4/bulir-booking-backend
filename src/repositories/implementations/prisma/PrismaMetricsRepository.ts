@@ -6,7 +6,7 @@ import { IMetricsRepository } from "../../IMetricsRepository";
 export class PrismaMetricsRepository implements IMetricsRepository {
   private repository = prisma;
 
-  async findAll(userId: string): Promise<IMetrics> {
+  async getMetrics(userId: string): Promise<IMetrics> {
     
     const [bookings, transactions] = await Promise.all([
       this.repository.booking.findMany({
@@ -24,6 +24,18 @@ export class PrismaMetricsRepository implements IMetricsRepository {
           }
         }
       }),
+    ]);
+
+    return {
+      bookings,
+      transactions
+    };
+  }
+
+  async globalMetrics(): Promise<IMetrics> {
+    const [bookings, transactions] = await Promise.all([
+      this.repository.booking.findMany({}),
+      this.repository.transaction.findMany({}),
     ]);
 
     return {

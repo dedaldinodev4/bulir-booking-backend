@@ -1,5 +1,6 @@
 import { IMetrics } from "../dtos/Metrics";
 
 export interface IMetricsRepository {
-  findAll(userId: string):Promise<IMetrics>;
+  getMetrics(userId: string):Promise<IMetrics>;
+  globalMetrics(): Promise<IMetrics>;
 }
